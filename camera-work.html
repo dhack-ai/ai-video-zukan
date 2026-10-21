@@ -1,0 +1,441 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>カメラワーク図鑑</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 撮影現場のショットリスト。上部に絞り込み、下にビューファインダー付きカードのグリッド */
+:root{
+  --bg:#E8ECEA; --panel:#F6F8F6; --ink:#16201B; --muted:#56635D; --line:#C6CFCA; --chip:#DAE0DC;
+  --accent:#2C47CC; --accent-ink:#FFFFFF; --hud:rgba(255,255,255,.85);
+  --f-display:"Dela Gothic One","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  /* scene illustration */
+  --sky1:#9CC2E6; --sky2:#F2DABD; --sun:#FFD36B; --flare:#8FB8FF;
+  --mtn2:#93A9C0; --mtn:#6F879F; --bld:#56677A; --bld2:#6E8093; --tree:#4D7A5A; --trunk:#5B4636;
+  --ground:#BBB08F; --road:#8E8777; --roadline:#F4EFDF;
+  --coat:#D8552D; --coat2:#3A6EA5; --pants:#2E3440; --skin:#E8B897; --hair:#2B2420; --eye:#111;
+  --letter:#FFFFFF; --car:#C8372D; --wheel:#202326; --glass:#BFD8EE; --fgdark:#14181A;
+  --land:#9DB58B; --water:#6FA3C8; --mroad:#ECE6D5; --block:#C8BBA2; --mtree:#5E8A62;
+  --petal:#F2A0B5; --pcenter:#F6D04D; --drop:#E3F4FF;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121614; --panel:#1B201E; --ink:#E6ECE8; --muted:#9AA8A1; --line:#2E3733; --chip:#252C29;
+  --accent:#8C9FFF; --accent-ink:#0E1330; --hud:rgba(255,255,255,.8); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121614; --panel:#1B201E; --ink:#E6ECE8; --muted:#9AA8A1; --line:#2E3733; --chip:#252C29;
+  --accent:#8C9FFF; --accent-ink:#0E1330; --hud:rgba(255,255,255,.8); color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+header{display:grid;gap:10px;margin-bottom:22px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,5vw,48px);line-height:1.15;margin:0;text-wrap:balance}
+.lede{max-width:62ch;color:var(--muted);margin:0}
+
+.controls{display:grid;gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:22px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row-label{font-size:12px;color:var(--muted);min-width:5.5em;font-weight:700}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:5px 11px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.search{flex:1 1 220px;min-width:0;font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.count{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-left:auto}
+.toggle{font:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-width:0}
+.card[hidden]{display:none!important}
+.meta{display:grid;gap:6px;padding:12px 14px 14px;min-width:0}
+.meta h3{margin:0;font-size:17px;font-weight:700;line-height:1.3}
+.en{font-family:var(--f-mono);font-size:12.5px;color:var(--accent);margin:0}
+.desc{margin:0;font-size:13.5px;color:var(--muted)}
+.ex{display:flex;gap:8px;align-items:flex-start;margin-top:4px;padding:8px 10px;background:var(--bg);border-radius:6px}
+.ex code{flex:1;min-width:0;font-family:var(--f-mono);font-size:11.5px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere}
+.copy{flex:none;font:inherit;font-size:11px;padding:3px 8px;border-radius:5px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.copy.done{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* viewfinder */
+.view{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--sky1);perspective:900px;isolation:isolate}
+.world{position:absolute;width:160%;height:160%;left:-30%;top:-30%;transform-origin:50% 50%}
+.L{position:absolute;inset:0;width:100%;height:100%;transform-origin:50% 50%}
+svg.L{overflow:visible}
+.sky{background:linear-gradient(180deg,var(--sky1) 0%,var(--sky1) 25%,var(--sky2) 56%)}
+.fg{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.fx{position:absolute;inset:0;z-index:4;pointer-events:none}
+.fx>div{position:absolute;inset:0}
+.hud{position:absolute;inset:8px;z-index:5;pointer-events:none;
+  background:
+   linear-gradient(var(--hud),var(--hud)) left top/14px 1.5px no-repeat, linear-gradient(var(--hud),var(--hud)) left top/1.5px 14px no-repeat,
+   linear-gradient(var(--hud),var(--hud)) right top/14px 1.5px no-repeat, linear-gradient(var(--hud),var(--hud)) right top/1.5px 14px no-repeat,
+   linear-gradient(var(--hud),var(--hud)) left bottom/14px 1.5px no-repeat, linear-gradient(var(--hud),var(--hud)) left bottom/1.5px 14px no-repeat,
+   linear-gradient(var(--hud),var(--hud)) right bottom/14px 1.5px no-repeat, linear-gradient(var(--hud),var(--hud)) right bottom/1.5px 14px no-repeat}
+.code{position:absolute;left:12px;top:9px;z-index:6;font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;color:#fff;background:rgba(10,14,12,.55);padding:1px 6px;border-radius:3px}
+.tag{position:absolute;right:12px;top:9px;z-index:6;font-family:var(--f-mono);font-size:10px;color:#fff;background:rgba(10,14,12,.55);padding:1px 6px;border-radius:3px}
+
+/* scene fills */
+.s-sun{fill:var(--sun)} .s-flare{fill:var(--flare);opacity:.75} .s-flare2{fill:#fff;opacity:.85}
+.s-mtn2{fill:var(--mtn2)} .s-mtn{fill:var(--mtn)} .s-bld{fill:var(--bld)} .s-bld2{fill:var(--bld2)}
+.s-win{fill:var(--sun);opacity:.55} .s-tree{fill:var(--tree)} .s-trunk{fill:var(--trunk)}
+.s-ground{fill:var(--ground)} .s-road{fill:var(--road)} .s-rl{stroke:var(--roadline);stroke-width:5;stroke-dasharray:22 26}
+.s-coat{fill:var(--coat)} .s-coat2{fill:var(--coat2)} .s-pants{fill:var(--pants)} .s-skin{fill:var(--skin)} .s-hair{fill:var(--hair)} .s-eye{fill:var(--eye)}
+.s-letter{fill:var(--letter);stroke:#9aa;stroke-width:1} .s-stem{stroke:var(--tree);stroke-width:3} .s-petal{fill:var(--petal)} .s-pc{fill:var(--pcenter)} .s-drop{fill:var(--drop);stroke:#fff;stroke-width:.6}
+.s-car{fill:var(--car)} .s-glass{fill:var(--glass)} .s-wheel{fill:var(--wheel)} .s-fg{fill:var(--fgdark)} .s-cloud{fill:#fff;opacity:.85}
+.m-land{fill:var(--land)} .m-water{fill:none;stroke:var(--water);stroke-width:80;stroke-linecap:round} .m-road{stroke:var(--mroad);stroke-width:18}
+.m-block{fill:var(--block)} .m-tree{fill:var(--mtree)} .m-car{fill:var(--car)} .m-car2{fill:var(--coat2)}
+
+/* show / hide per technique */
+.flare,.letter,.car,.L.map,.L.clouds,.L.subj2,.fg g,.fx>div{display:none}
+.sh-flare .flare,.sh-letter .letter,.sh-car .car{display:inline}
+.sh-car .person{display:none}
+.sh-map .L.map{display:block} .sh-map .L:not(.map){display:none}
+.sh-clouds .L.clouds,.sh-subj2 .L.subj2{display:block}
+.sh-pillar .fg .pillar,.sh-window .fg .window,.sh-shoulder .fg .shoulder,.sh-hands .fg .hands{display:inline}
+.sh-lb .fx .lb,.sh-fish .fx .fish,.sh-ts .fx .ts,.sh-parts .fx .parts,.sh-dio .fx .dio,.sh-dream .fx .dream,.sh-shards .fx .shards{display:block}
+.space{background:#05070d radial-gradient(1px 1px at 20% 30%,#fff 50%,transparent 51%) 0 0/60px 50px}
+.space::before{content:"";position:absolute;inset:0;background:radial-gradient(1.2px 1.2px at 70% 60%,#cfe0ff 50%,transparent 51%) 0 0/90px 70px}
+
+.lb{background:linear-gradient(#000 0 13%,transparent 13% 87%,#000 87%)}
+.fish{background:radial-gradient(ellipse 62% 78% at 50% 50%,transparent 70%,rgba(0,0,0,.65) 88%,#000 96%)}
+.ts{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);-webkit-mask:linear-gradient(#000 0 18%,transparent 40% 60%,#000 82%);mask:linear-gradient(#000 0 18%,transparent 40% 60%,#000 82%)}
+.parts{background-image:radial-gradient(2px 3px at 30% 40%,rgba(255,255,255,.9) 60%,transparent 61%),radial-gradient(1.5px 2.5px at 70% 10%,rgba(255,255,255,.8) 60%,transparent 61%);background-size:46px 60px,70px 90px}
+.dio{background:linear-gradient(90deg,transparent 49.4%,rgba(255,255,255,.35) 50%,transparent 50.6%)}
+.dream{background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(255,250,235,.55) 100%)}
+.shards{background-image:linear-gradient(60deg,transparent 46%,rgba(220,240,255,.85) 47% 53%,transparent 54%),linear-gradient(-30deg,transparent 47%,rgba(220,240,255,.8) 48% 52%,transparent 53%);background-size:40px 38px,58px 46px;background-position:10px 6px,22px 30px;-webkit-mask:radial-gradient(circle at 55% 45%,#000 30%,transparent 62%);mask:radial-gradient(circle at 55% 45%,#000 30%,transparent 62%)}
+
+.models{margin-top:40px;display:grid;gap:14px}
+.models h2{font-family:var(--f-display);font-weight:400;font-size:24px;margin:0}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.model{padding:14px 16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0}
+.model h3{margin:0 0 6px;font-size:15px}
+.model ul{margin:0;padding-left:1.1em;font-size:13.5px;color:var(--muted);display:grid;gap:4px}
+.model code{font-family:var(--f-mono);font-size:12px;color:var(--ink);overflow-wrap:anywhere}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">AI video prompt reference · 57 moves</span>
+    <h1>カメラワーク図鑑</h1>
+    <p class="lede">各カードのビューファインダーで、カメラがどう動くかをアニメーションで確認できます。下段の英語プロンプトはそのままコピーして使えます。</p>
+  </header>
+
+  <section class="controls" aria-label="絞り込み">
+    <div class="row">
+      <input id="q" class="search" type="search" placeholder="手法名・英語・効果で検索（例：寄り、orbit、不安）">
+      <button id="pause" class="toggle" type="button">動きを止める</button>
+    </div>
+    <div class="row" id="cats"><span class="row-label">カテゴリ</span></div>
+    <div class="row" id="purposes"><span class="row-label">目的から</span></div>
+    <div class="row"><span class="count" id="count"></span></div>
+  </section>
+
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty" hidden>条件に合う手法がありません。検索語かフィルタを変えてください。</p>
+
+  <section class="models">
+    <h2>モデル別の書き方メモ</h2>
+    <div class="mgrid">
+      <div class="model"><h3>Seedance</h3><ul>
+        <li>カメラの動きは1クリップ1つ。開始点と終了点を書く</li>
+        <li>複雑な動きは参照動画で：<code>Use @Video1 only for the camera movement and pacing.</code></li>
+        <li>揺れを避けるなら <code>no camera shake</code></li></ul></div>
+      <div class="model"><h3>Kling 3.0</h3><ul>
+        <li>カメラ指示はプロンプトの先頭に置く</li>
+        <li>マルチショットはUIで Multi-Shot をオンにして Custom Multi-Shot で設定</li>
+        <li>ネガティブに <code>jittery camera, warped faces</code></li></ul></div>
+      <div class="model"><h3>Wan 3.0</h3><ul>
+        <li><code>Shot 1 [0-4s]: ... Hard cut. Shot 2 [4-8s]: ...</code></li>
+        <li>カットさせない時は1行目に <code>One continuous shot</code></li>
+        <li>不要なら <code>No dialogue. No BGM.</code> と明記</li></ul></div>
+      <div class="model"><h3>MiniMax H3</h3><ul>
+        <li>旧記法 <code>[Push in]</code> ではなく自然な撮影用語で書く</li>
+        <li>被写体の動き・カメラの動き・カットを分けて書く</li>
+        <li><code>[0-3s] ... [3-6s] ...</code> のタイムラインが有効</li></ul></div>
+    </div>
+  </section>
+</div>
+
+<template id="scene">
+  <article class="card">
+    <div class="view">
+      <div class="world">
+        <div class="L sky"></div>
+        <svg class="L sun" viewBox="0 0 1600 900" aria-hidden="true"><g class="flare"><ellipse cx="1000" cy="330" rx="460" ry="5" class="s-flare"/><ellipse cx="1000" cy="330" rx="220" ry="2.5" class="s-flare2"/></g><circle cx="1000" cy="330" r="34" class="s-sun"/></svg>
+        <svg class="L clouds" viewBox="0 0 1600 900" aria-hidden="true"><ellipse cx="420" cy="250" rx="90" ry="22" class="s-cloud"/><ellipse cx="470" cy="236" rx="50" ry="22" class="s-cloud"/><ellipse cx="1120" cy="210" rx="110" ry="20" class="s-cloud"/><ellipse cx="780" cy="280" rx="70" ry="16" class="s-cloud"/></svg>
+        <svg class="L far" viewBox="0 0 1600 900" aria-hidden="true"><polygon class="s-mtn2" points="0,505 140,420 300,470 460,380 640,480 820,400 1000,470 1180,385 1380,470 1600,420 1600,505"/><polygon class="s-mtn" points="0,505 220,445 400,490 600,430 760,495 960,440 1140,495 1340,450 1600,490 1600,505"/></svg>
+        <svg class="L ground" viewBox="0 0 1600 900" aria-hidden="true"><rect y="500" width="1600" height="420" class="s-ground"/><polygon points="770,500 830,500 1180,920 420,920" class="s-road"/><line x1="800" y1="504" x2="800" y2="920" class="s-rl"/></svg>
+        <svg class="L mid" viewBox="0 0 1600 900" aria-hidden="true"><rect x="330" y="380" width="70" height="125" class="s-bld"/><rect x="345" y="398" width="14" height="14" class="s-win"/><rect x="372" y="430" width="14" height="14" class="s-win"/><rect x="410" y="420" width="46" height="85" class="s-bld2"/><rect x="556" y="470" width="8" height="35" class="s-trunk"/><circle cx="560" cy="455" r="26" class="s-tree"/><rect x="1050" y="470" width="8" height="35" class="s-trunk"/><circle cx="1054" cy="452" r="30" class="s-tree"/><rect x="1150" y="360" width="80" height="145" class="s-bld"/><rect x="1166" y="380" width="14" height="14" class="s-win"/><rect x="1200" y="420" width="14" height="14" class="s-win"/><rect x="1240" y="415" width="50" height="90" class="s-bld2"/></svg>
+        <svg class="L map" viewBox="0 0 1600 900" aria-hidden="true"></svg>
+        <svg class="L subj2" viewBox="0 0 1600 900" aria-hidden="true"><g transform="translate(120 0)"><rect x="784" y="552" width="13" height="50" rx="6" class="s-pants"/><rect x="803" y="552" width="13" height="50" rx="6" class="s-pants"/><rect x="776" y="488" width="48" height="72" rx="20" class="s-coat2"/><circle cx="800" cy="466" r="21" class="s-skin"/><path d="M779,464 a21,21 0 0 1 42,0 Z" class="s-hair"/><circle cx="792" cy="469" r="2.6" class="s-eye"/></g></svg>
+        <svg class="L subj" viewBox="0 0 1600 900" aria-hidden="true">
+          <g class="flower"><line x1="700" y1="602" x2="700" y2="576" class="s-stem"/><circle cx="700" cy="572" r="9" class="s-petal"/><circle cx="700" cy="572" r="3.5" class="s-pc"/><circle cx="706" cy="566" r="2.3" class="s-drop"/></g>
+          <g class="person"><rect x="784" y="552" width="13" height="50" rx="6" class="s-pants"/><rect x="803" y="552" width="13" height="50" rx="6" class="s-pants"/><rect x="776" y="488" width="48" height="72" rx="20" class="s-coat"/><circle cx="800" cy="466" r="21" class="s-skin"/><path d="M779,464 a21,21 0 0 1 42,0 Z" class="s-hair"/><circle cx="808" cy="469" r="2.6" class="s-eye"/><g class="letter"><rect x="822" y="524" width="24" height="16" rx="2" class="s-letter"/><path d="M822,524 l12,8 l12,-8" fill="none" stroke="#9aa" stroke-width="1"/></g></g>
+          <g class="car"><path d="M745,545 l28,-32 h74 l28,32 z" class="s-car"/><path d="M760,543 l18,-24 h28 v24 z M812,543 v-24 h30 l18,24 z" class="s-glass"/><rect x="700" y="540" width="210" height="46" rx="14" class="s-car"/><circle cx="748" cy="588" r="17" class="s-wheel"/><circle cx="862" cy="588" r="17" class="s-wheel"/></g>
+        </svg>
+      </div>
+      <svg class="fg" viewBox="0 0 1000 562" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g class="pillar"><rect x="-40" y="0" width="560" height="562" class="s-fg"/><rect x="500" y="0" width="20" height="562" fill="#2a3034"/></g>
+        <g class="window"><path fill-rule="evenodd" d="M-50,-50 H1050 V612 H-50 Z M330,170 H670 V392 H330 Z" class="s-fg"/><rect x="495" y="170" width="10" height="222" class="s-fg"/><rect x="330" y="276" width="340" height="9" class="s-fg"/></g>
+        <g class="shoulder"><ellipse cx="170" cy="600" rx="260" ry="190" class="s-fg"/><ellipse cx="190" cy="330" rx="88" ry="110" class="s-fg"/></g>
+        <g class="hands"><ellipse cx="290" cy="560" rx="70" ry="95" fill="#d9a988"/><ellipse cx="710" cy="560" rx="70" ry="95" fill="#d9a988"/><rect x="210" y="590" width="160" height="80" fill="#3a4a5c"/><rect x="630" y="590" width="160" height="80" fill="#3a4a5c"/></g>
+      </svg>
+      <div class="fx"><div class="lb"></div><div class="fish"></div><div class="ts"></div><div class="parts"></div><div class="dio"></div><div class="dream"></div><div class="shards"></div></div>
+      <div class="hud"></div>
+      <span class="code"></span><span class="tag" hidden></span>
+    </div>
+    <div class="meta"><h3></h3><p class="en"></p><p class="desc"></p><div class="ex"><code></code><button class="copy" type="button">コピー</button></div></div>
+  </article>
+</template>
+
+<script>
+// ---------- top-down map (built once) ----------
+const mapSVG = (()=>{let s='<rect x="-900" y="-900" width="3400" height="2700" class="m-land"/>';
+  s+='<path class="m-water" d="M-900,780 C -100,560 500,980 950,640 S 1800,260 2500,520"/>';
+  for(let x=-700;x<=2300;x+=300) s+=`<line x1="${x}" y1="-900" x2="${x}" y2="1800" class="m-road"/>`;
+  for(let y=-700;y<=1700;y+=260) s+=`<line x1="-900" y1="${y}" x2="2500" y2="${y}" class="m-road"/>`;
+  let r=7; const rnd=()=> (r=(r*9301+49297)%233280)/233280;
+  for(let x=-700;x<2300;x+=300) for(let y=-700;y<1700;y+=260){
+    if(rnd()<.55) s+=`<rect x="${x+22}" y="${y+22}" width="${110+rnd()*120|0}" height="${80+rnd()*120|0}" class="m-block"/>`;
+    else for(let i=0;i<4;i++) s+=`<circle cx="${x+40+rnd()*220|0}" cy="${y+40+rnd()*180|0}" r="${14+rnd()*16|0}" class="m-tree"/>`;
+    if(rnd()<.4) s+=`<rect x="${x-6}" y="${y+60+rnd()*120|0}" width="12" height="22" rx="3" class="${rnd()<.5?'m-car':'m-car2'}"/>`;
+  }
+  s+='<circle cx="800" cy="450" r="16" fill="#2E3440"/><circle cx="800" cy="450" r="10" fill="#2B2420"/>';
+  return s;})();
+
+// ---------- animation helpers ----------
+const T=(...xs)=>xs.map(t=>({transform:t}));
+const H=(a,b)=>[{transform:a},{transform:a,offset:.15},{transform:b,offset:.85},{transform:b}];
+const HF=(a,b)=>[{filter:a},{filter:a,offset:.15},{filter:b,offset:.85},{filter:b}];
+const C=(t,f)=>[{transform:t,...(f?{filter:f}:{})},{transform:t,...(f?{filter:f}:{})}];
+const FO='50% 51.8%', FEET='50% 66.5%', HOR='50% 55.5%';
+const bob=['subj',T('translateY(0)','translateY(-.7%)','translateY(0)'),{d:520,dir:'normal',add:true}];
+const shakeFrames=(amp,rot,sc)=>{const p=[[0,0,0],[-1,.7,-1],[.9,-.5,.7],[-.5,-.9,1],[.7,.8,-.5],[-.8,.2,.4],[.3,-.6,-.8],[0,0,0]];
+  return p.map(([x,y,r])=>({transform:`scale(${sc}) translate(${x*amp}%,${y*amp}%) rotate(${r*rot}deg)`}));};
+
+const CATS={'0':'基本','A':'カメラ移動','B':'リグ・手持ち','C':'レンズ・フォーカス','D':'アングル','E':'ショットサイズ','F':'時間表現'};
+
+const DATA=[
+ // ----- 基本
+ {id:'dollyin',cat:'0',ja:'ドリーイン',en:'dolly in, push in',desc:'被写体に迫り、緊張や感情を高める',ex:'slow dolly in toward her face as she realizes the truth',d:3400,dir:'normal',
+  tr:[['far',H('scale(1)','scale(1.1)'),{o:FO}],['sun',H('scale(1)','scale(1.1)'),{o:FO}],['mid',H('scale(1)','scale(1.4)'),{o:FO}],['ground',H('scale(1)','scale(1.7)'),{o:FO}],['subj',H('scale(1)','scale(2.2)'),{o:FO}]]},
+ {id:'pan',cat:'0',ja:'パン',en:'pan left / right',desc:'固定位置から水平に首を振り、空間や視線の移動を見せる',ex:'slow pan right across the empty office',d:4200,
+  tr:[['world',T('rotateY(-14deg) translateX(10%)','rotateY(14deg) translateX(-10%)')]]},
+ {id:'tilt',cat:'0',ja:'ティルト',en:'tilt up / down',desc:'固定位置から縦に首を振り、高さや全身を見せる',ex:'slow tilt up from his shoes to his face',d:4000,
+  tr:[['world',T('rotateX(-12deg) translateY(-11%)','rotateX(12deg) translateY(11%)')]]},
+ {id:'tracking',cat:'0',ja:'トラッキング',en:'tracking shot',desc:'動く被写体と並走・追従する',ex:'smooth tracking shot following her through the crowded street',d:4200,dir:'normal',e:'linear',
+  tr:[['far',T('translateX(4%)','translateX(-4%)')],['sun',T('translateX(4%)','translateX(-4%)')],['mid',T('translateX(22%)','translateX(-22%)')],['ground',T('skewX(-14deg)','skewX(-14deg)'),{o:HOR}],bob]},
+ {id:'crane',cat:'0',ja:'クレーン',en:'crane shot, crane up',desc:'大きく上昇・下降し、壮大さや終幕を出す',ex:'crane up from the couple to reveal the whole city at dusk',d:4400,dir:'normal',
+  tr:[['world',H('translateY(-8%) scale(1.35)','translateY(10%) scale(.8)')]]},
+ {id:'orbit',cat:'0',ja:'オービット',en:'orbit shot, 360 orbit',desc:'被写体の周りを回り、存在感や関係性を強調する',ex:'slow 180-degree orbit around the dancer',d:3200,
+  tr:[['subj',T('scaleX(1)','scaleX(.45)'),{o:'50% 50%'}],['mid',T('translateX(18%)','translateX(-18%)')],['far',T('translateX(5%)','translateX(-5%)')],['sun',T('translateX(5%)','translateX(-5%)')],['ground',T('skewX(28deg)','skewX(-28deg)'),{o:HOR}]]},
+ {id:'dollyzoom',cat:'0',ja:'ドリーズーム',en:'dolly zoom, vertigo effect',desc:'被写体の大きさは保ったまま背景だけが伸び縮みする。衝撃や眩暈',ex:'dolly zoom on his face as the background stretches away',d:2800,
+  tr:[['far',T('scale(1)','scale(1.9)'),{o:FO}],['sun',T('scale(1)','scale(1.9)'),{o:FO}],['mid',T('scale(1)','scale(1.55)'),{o:FO}],['ground',T('scale(1)','scale(1.25)'),{o:FO}],['world',C('scale(1.5)'),{o:FO}]]},
+ // ----- A 移動
+ {id:'dollyout',cat:'A',ja:'ドリーアウト',en:'dolly out, pull back',desc:'被写体から離れて状況を明かし、孤独や余韻を出す',ex:'slow pull back from the girl to reveal the empty stadium',d:3600,dir:'normal',
+  tr:[['far',H('scale(1.1)','scale(1)'),{o:FO}],['sun',H('scale(1.1)','scale(1)'),{o:FO}],['mid',H('scale(1.4)','scale(1)'),{o:FO}],['ground',H('scale(1.7)','scale(1)'),{o:FO}],['subj',H('scale(2.2)','scale(1)'),{o:FO}]]},
+ {id:'truck',cat:'A',ja:'トラック（横移動）',en:'truck left / right',desc:'カメラ本体が真横に平行移動する。手前ほど速く流れる',ex:'camera trucks right past a row of desks',d:3800,dir:'normal',
+  tr:[['subj',H('translateX(10%)','translateX(-10%)')],['mid',H('translateX(7%)','translateX(-7%)')],['far',H('translateX(2%)','translateX(-2%)')],['sun',H('translateX(2%)','translateX(-2%)')],['ground',H('skewX(22deg)','skewX(-22deg)'),{o:HOR}]]},
+ {id:'pedestal',cat:'A',ja:'ペデスタル',en:'pedestal up / down',desc:'角度を保ったまま垂直に上下する',ex:'camera pedestals up from the table to eye level',d:3800,dir:'normal',
+  tr:[['world',H('translateY(-9%) scale(1.15)','translateY(9%) scale(1.15)')]]},
+ {id:'leading',cat:'A',ja:'リードショット',en:'leading shot, camera moving backward',desc:'歩く被写体の前を後退しながら撮る。歩きながらの会話に',ex:'camera moves backward in front of two friends walking and talking',d:4200,dir:'normal',e:'linear',
+  tr:[['mid',T('scale(1.25)','scale(.95)'),{o:HOR}],['far',T('scale(1.05)','scale(.98)'),{o:HOR}],['ground',T('scale(1.2)','scale(1)'),{o:HOR}],['world',C('scale(1.3)'),{o:FO}],bob]},
+ {id:'spiral',cat:'A',ja:'スパイラル',en:'spiral shot, corkscrew rise',desc:'回り込みながら上昇し、高揚感やクライマックスを出す',ex:'camera spirals upward around the hero on the rooftop',d:4400,dir:'normal',
+  tr:[['world',H('rotate(-10deg) scale(1.55)','rotate(14deg) scale(.95) translateY(6%)'),{o:'50% 60%'}],['subj',T('scaleX(1)','scaleX(.5)'),{d:2200,o:'50% 50%'}]]},
+ {id:'flythrough',cat:'A',ja:'フライスルー',en:'fly-through',desc:'窓や隙間、物体を通り抜けてシームレスに移動する',ex:'camera flies through the window into the living room',d:3200,dir:'normal',e:'ease-in',show:'window',
+  tr:[['fg',H('scale(1)','scale(4.5)'),{o:'50% 50%'}],['world',H('scale(1)','scale(1.45)'),{o:FO}]]},
+ {id:'flyover',cat:'A',ja:'フライオーバー',en:'flyover',desc:'風景の上空を滑るように通過し、地理や規模を見せる',ex:'smooth flyover above a misty forest',d:6000,dir:'normal',e:'linear',show:'map',
+  tr:[['map',T('scale(1.3) translateY(12%)','scale(1.3) translateY(-12%)')]]},
+ {id:'aerial',cat:'A',ja:'ドローン空撮',en:'aerial drone shot',desc:'高所から広く捉える。冒頭やロケーション紹介に',ex:'aerial drone shot of a coastal town at sunrise',d:5600,dir:'normal',e:'ease-out',show:'map',
+  tr:[['map',H('scale(1.9) rotate(0deg)','scale(1.05) rotate(9deg)')]]},
+ {id:'fpv',cat:'A',ja:'FPVドローン',en:'FPV drone shot',desc:'高速の急旋回・急降下でスピード感を出す',ex:'fast FPV drone diving down a waterfall',d:1900,e:'cubic-bezier(.7,0,.3,1)',show:'map',
+  tr:[['map',[{transform:'rotate(-32deg) scale(2.8) translateY(8%)',filter:'blur(0px)'},{transform:'rotate(0deg) scale(2) translateY(0)',filter:'blur(2px)',offset:.5},{transform:'rotate(26deg) scale(1.3) translateY(-6%)',filter:'blur(0px)'}]]]},
+ {id:'reveal',cat:'A',ja:'リビールショット',en:'reveal shot',desc:'遮蔽物の陰から横に出て、被写体を見せる',ex:'camera slides past a pillar to reveal the bride',d:3600,dir:'normal',show:'pillar',
+  tr:[['fg',H('translateX(0)','translateX(-62%)')],['world',H('translateX(-3%) scale(1.3)','translateX(2%) scale(1.3)'),{o:FO}]]},
+ {id:'carmount',cat:'A',ja:'カーマウント',en:'car-mounted shot, vehicle tracking',desc:'車両に固定して並走・追走する',ex:'car-mounted shot alongside a red sports car on the highway',d:900,dir:'normal',e:'linear',show:'car',
+  tr:[['mid',[{transform:'translateX(18%)',filter:'blur(2px)'},{transform:'translateX(-18%)',filter:'blur(2px)'}]],['far',T('translateX(3%)','translateX(-3%)'),{d:4000}],['sun',T('translateX(3%)','translateX(-3%)'),{d:4000}],['ground',C('skewX(-30deg)'),{o:HOR}],['subj',T('translateY(0)','translateY(-.3%)'),{d:160,dir:'alternate'}],['world',C('scale(1.25)'),{o:'50% 62%'}]]},
+ {id:'glide',cat:'A',ja:'グラウンドレベル',en:'ground-level glide',desc:'地面すれすれを滑るように進み、迫力を出す',ex:'ground-level glide toward approaching footsteps',d:3200,dir:'normal',e:'ease-in',
+  tr:[['world',H('scale(1.7) translateY(-9%)','scale(2.7) translateY(-10%)'),{o:'44% 67%'}]]},
+ // ----- B リグ
+ {id:'handheld',cat:'B',ja:'ハンドヘルド',en:'handheld camera',desc:'手持ちの揺れでリアリティや臨場感を出す',ex:'handheld camera following a nurse down the hallway',d:2600,dir:'normal',
+  tr:[['world',shakeFrames(.6,.6,1.2),{o:FO}]]},
+ {id:'steadicam',cat:'B',ja:'ステディカム／ジンバル',en:'steadicam, gimbal shot',desc:'揺れを抑えて滑らかに長回しで追従する',ex:'steadicam shot following the chef through the kitchen',d:5200,dir:'normal',e:'linear',
+  tr:[['far',T('translateX(3%)','translateX(-3%)')],['sun',T('translateX(3%)','translateX(-3%)')],['mid',T('translateX(16%)','translateX(-16%)')],['ground',C('skewX(-10deg)'),{o:HOR}],['world',T('translateY(-.5%) scale(1.2)','translateY(.5%) scale(1.2)'),{d:1900,dir:'alternate',e:'ease-in-out',o:FO}],bob]},
+ {id:'snorricam',cat:'B',ja:'スノリカム',en:'snorricam, body-mounted camera',desc:'人物にカメラを固定し、背景だけが揺れる。酩酊・パニック',ex:'snorricam on a panicking man running',d:760,
+  tr:['sky','sun','far','mid','ground'].map(l=>[l,T('rotate(-7deg) translateY(-2%)','rotate(7deg) translateY(2%)'),{o:FO}]).concat([['world',C('scale(1.5)'),{o:FO}]])},
+ {id:'pov',cat:'B',ja:'POV',en:'POV shot, first-person view',desc:'登場人物の主観視点で没入させる',ex:'POV shot opening a door into a dark room',d:540,show:'hands',
+  tr:[['world',T('scale(1.15) translateY(0)','scale(1.18) translateY(-.8%)'),{o:FO}],['fg',T('translateY(0)','translateY(3%)')]]},
+ {id:'shake',cat:'B',ja:'カメラシェイク',en:'camera shake',desc:'衝撃・爆発・地震の揺れ',ex:'heavy camera shake as the building collapses',d:700,dir:'normal',e:'linear',
+  tr:[['world',shakeFrames(2.4,2.2,1.25),{o:FO}]]},
+ {id:'floating',cat:'B',ja:'フローティングカム',en:'floating camera, slow drift',desc:'浮遊するような緩やかな漂い。夢・回想',ex:'floating camera slowly drifting through a sunlit room',d:6000,show:'dream',
+  tr:[['world',[{transform:'translate(-3%,-1.5%) rotate(-1.2deg) scale(1.3)',filter:'blur(.6px) brightness(1.08)'},{transform:'translate(3%,1.5%) rotate(1.2deg) scale(1.35)',filter:'blur(.6px) brightness(1.08)'}],{o:FO}]]},
+ {id:'static',cat:'B',ja:'固定ショット',en:'static shot, locked-off',desc:'カメラは完全に固定。動くのは被写体だけ',ex:'static shot, locked-off, a woman sits alone on a bench',d:6000,e:'linear',tag:'LOCKED',
+  tr:[['subj',T('translateX(-14%)','translateX(14%)')],bob,['world',C('scale(1.2)'),{o:FO}]]},
+ // ----- C レンズ
+ {id:'zoom',cat:'C',ja:'ズームイン／アウト',en:'slow zoom in / out',desc:'カメラ位置は固定し画角だけ変える。全体が均一に拡大（ドリーとの違い）',ex:'slow zoom in on the man in the crowd',d:3400,
+  tr:[['world',T('scale(1)','scale(2)'),{o:FO}]]},
+ {id:'crash',cat:'C',ja:'クラッシュズーム',en:'crash zoom, snap zoom',desc:'一瞬で急激に寄る。驚き・コミカル',ex:'sudden crash zoom on her shocked face',d:2600,dir:'normal',e:'linear',
+  tr:[['world',[{transform:'scale(1)',filter:'blur(0px)'},{transform:'scale(1)',filter:'blur(0px)',offset:.45},{transform:'scale(2.3)',filter:'blur(3px)',offset:.51},{transform:'scale(3.3)',filter:'blur(0px)',offset:.56},{transform:'scale(3.3)',filter:'blur(0px)'}],{o:FO}]]},
+ {id:'whip',cat:'C',ja:'ウィップパン',en:'whip pan',desc:'高速パンでブラーをかける。場面転換にも',ex:'fast whip pan to the door as it bursts open',d:2600,e:'linear',
+  tr:[['world',[{transform:'translateX(13%)',filter:'blur(0px)'},{transform:'translateX(13%)',filter:'blur(0px)',offset:.4},{transform:'translateX(0)',filter:'blur(10px)',offset:.5},{transform:'translateX(-13%)',filter:'blur(0px)',offset:.6},{transform:'translateX(-13%)',filter:'blur(0px)'}]]]},
+ {id:'rack',cat:'C',ja:'ラックフォーカス',en:'rack focus',desc:'ピントを手前から奥へ移し、注目点を変える',ex:'rack focus from the ring in the foreground to her face',d:3200,
+  tr:[['subj',HF('blur(0px)','blur(5px)')],['far',HF('blur(5px)','blur(0px)')],['sun',HF('blur(5px)','blur(0px)')],['mid',HF('blur(5px)','blur(0px)')],['world',C('scale(1.6)'),{o:FO}]]},
+ {id:'shallow',cat:'C',ja:'浅い被写界深度',en:'shallow depth of field, bokeh',desc:'背景を大きくぼかして被写体を際立たせる',ex:'shallow depth of field, creamy bokeh city lights',d:5000,
+  tr:[['far',C('none','blur(6px)')],['sun',C('none','blur(6px)')],['mid',C('none','blur(5px)')],['ground',C('none','blur(2px)')],['world',T('scale(1.6)','scale(1.7)'),{o:FO}]]},
+ {id:'deep',cat:'C',ja:'ディープフォーカス',en:'deep focus',desc:'手前から奥まで全てにピントが合い、空間全体を見せる',ex:'deep focus, foreground and background both sharp',d:5000,
+  tr:[['world',T('scale(1.15) translateX(2%)','scale(1.2) translateX(-2%)'),{o:FO}]]},
+ {id:'diopter',cat:'C',ja:'スプリットディオプター',en:'split diopter',desc:'手前と奥の2人に同時にピントが合う。対立の表現',ex:'split diopter shot, a man close in foreground, rival far behind, both in focus',d:4000,show:'subj2 dio',
+  tr:[['subj2',C('translate(-17%,10%) scale(2.3)'),{o:FEET}],['subj',C('translate(6%,-1%) scale(.75)'),{o:FEET}],['mid',C('none','blur(4px)')],['far',C('none','blur(4px)')],['world',T('scale(1.25) translateX(1%)','scale(1.28) translateX(-1%)'),{o:'50% 50%'}]]},
+ {id:'tiltshift',cat:'C',ja:'ティルトシフト',en:'tilt-shift, miniature effect',desc:'実景を上下ぼかしでミニチュア風に見せる',ex:'tilt-shift view of a busy intersection',d:7000,show:'map ts',
+  tr:[['map',[{transform:'scale(1.5) translate(0,0)',filter:'saturate(1.6) contrast(1.1)'},{transform:'scale(1.5) translate(-4%,2%)',filter:'saturate(1.6) contrast(1.1)'}]]]},
+ {id:'fisheye',cat:'C',ja:'魚眼',en:'fisheye lens',desc:'強い歪みと周辺減光でストリート感・MV感',ex:'fisheye lens close to a skateboarder',d:3000,show:'fish',
+  tr:[['world',T('scale(1.8) translateX(3%)','scale(1.8) translateX(-3%)'),{o:FO}],['subj',C('scale(1.25)'),{o:FO}]]},
+ {id:'anamorphic',cat:'C',ja:'アナモルフィック',en:'anamorphic lens, lens flare',desc:'横長のフレアとシネスコ比率で映画的な質感',ex:'anamorphic lens, horizontal blue flares',d:5200,show:'flare lb',
+  tr:[['world',T('translateX(7%) scale(1.25)','translateX(-7%) scale(1.25)'),{o:FO}]]},
+ {id:'macro',cat:'C',ja:'マクロ',en:'macro shot',desc:'極小の被写体や質感の超接写',ex:'macro shot of a water droplet on a leaf',d:4400,dir:'normal',e:'cubic-bezier(.6,0,.2,1)',
+  tr:[['world',H('scale(1)','scale(14)'),{o:'44.12% 62.9%'}],['far',HF('blur(0px)','blur(8px)')],['mid',HF('blur(0px)','blur(8px)')],['sun',HF('blur(0px)','blur(8px)')]]},
+ {id:'cosmic',cat:'C',ja:'コズミックズーム',en:'cosmic zoom out, earth zoom',desc:'人物から地球規模まで一気に引く',ex:'cosmic zoom out from her eye to the city, then to Earth from space',d:5200,dir:'normal',e:'cubic-bezier(.5,0,.2,1)',view:'space',
+  tr:[['world',[{transform:'scale(2.4)',clipPath:'circle(110% at 50% 51.8%)'},{transform:'scale(2.4)',clipPath:'circle(110% at 50% 51.8%)',offset:.12},{transform:'scale(.12)',clipPath:'circle(20% at 50% 51.8%)',offset:.88},{transform:'scale(.12)',clipPath:'circle(20% at 50% 51.8%)'}],{o:FO}]]},
+ // ----- D アングル
+ {id:'low',cat:'D',ja:'ローアングル',en:'low angle',desc:'下から見上げて威圧感・英雄感を出す',ex:'low angle shot of the CEO standing',d:5000,
+  tr:[['world',T('translateY(13%) scale(1.35)','translateY(14%) scale(1.42)'),{o:FEET}],['subj',C('scale(1.3)'),{o:FEET}],['mid',C('scaleY(1.3)'),{o:HOR}]]},
+ {id:'high',cat:'D',ja:'ハイアングル',en:'high angle',desc:'上から見下ろして無力感・孤独を表す',ex:'high angle shot of a child alone in the rain',d:5000,
+  tr:[['world',T('translateY(-13%) scale(1.3)','translateY(-14%) scale(1.36)'),{o:FEET}],['subj',C('scale(.8)'),{o:FEET}],['mid',C('scaleY(.75)'),{o:HOR}]]},
+ {id:'worm',cat:'D',ja:'ワームズアイ',en:"worm's-eye view",desc:'地面からの極端な見上げで巨大さを強調する',ex:"worm's-eye view of skyscrapers",d:5000,
+  tr:[['world',T('translateY(16%) scale(1.4)','translateY(17%) scale(1.46)'),{o:FEET}],['subj',C('scale(1.8)'),{o:FEET}],['mid',C('scaleY(2)'),{o:HOR}]]},
+ {id:'topdown',cat:'D',ja:'トップダウン',en:"top-down, bird's-eye view",desc:'真上からの俯瞰。配置・料理・群衆に',ex:'top-down shot of hands preparing sushi',d:8000,show:'map',
+  tr:[['map',T('scale(2) rotate(0deg)','scale(2.05) rotate(4deg)')]]},
+ {id:'dutch',cat:'D',ja:'ダッチアングル',en:'dutch angle',desc:'画面を傾けて不安・異常を表す',ex:'dutch angle of a man in a dim corridor',d:4200,
+  tr:[['world',T('rotate(-14deg) scale(1.3)','rotate(-17deg) scale(1.33)'),{o:FO}]]},
+ {id:'roll',cat:'D',ja:'カメラロール',en:'camera roll, barrel roll',desc:'光軸を中心に画面が回転する。混乱・ダイナミック',ex:'slow camera roll as he loses consciousness',d:6000,dir:'normal',e:'linear',
+  tr:[['world',T('rotate(0deg) scale(1.5)','rotate(360deg) scale(1.5)'),{o:FO}]]},
+ // ----- E ショットサイズ
+ {id:'establishing',cat:'E',ja:'エスタブリッシング',en:'establishing shot',desc:'冒頭で場所や状況を提示する',ex:'establishing shot of a Tokyo office tower at night',d:7000,
+  tr:[['world',T('scale(.67)','scale(.72)')]]},
+ {id:'xwide',cat:'E',ja:'エクストリームワイド',en:'extreme wide shot',desc:'広大な風景の中に人物を小さく置く',ex:'extreme wide shot, a tiny figure on a vast salt flat',d:7000,
+  tr:[['world',T('scale(.67)','scale(.7)')],['subj',C('scale(.45)'),{o:FEET}]]},
+ {id:'medium',cat:'E',ja:'ミディアムショット',en:'medium shot',desc:'腰から上。会話シーンの基本',ex:'medium shot of two colleagues talking',d:5000,
+  tr:[['world',T('scale(2.4)','scale(2.48)'),{o:'50% 56%'}]]},
+ {id:'closeup',cat:'E',ja:'クローズアップ',en:'close-up',desc:'顔のアップで表情と感情を見せる',ex:'close-up of her teary eyes',d:5000,
+  tr:[['world',T('scale(4)','scale(4.15)'),{o:FO}]]},
+ {id:'ecu',cat:'E',ja:'エクストリームCU',en:'extreme close-up',desc:'目・唇・指先などの細部の超アップ',ex:'extreme close-up of a finger pressing a button',d:5000,
+  tr:[['world',T('scale(15)','scale(16)'),{o:'50.5% 52.1%'}]]},
+ {id:'ots',cat:'E',ja:'オーバーザショルダー',en:'over-the-shoulder shot',desc:'相手の肩越しに撮る。会話・対峙の定番',ex:'over-the-shoulder shot from the interviewer',d:5000,show:'shoulder',
+  tr:[['world',T('scale(2.1) translateX(4%)','scale(2.16) translateX(4%)'),{o:FO}]]},
+ {id:'twoshot',cat:'E',ja:'ツーショット',en:'two-shot',desc:'2人を同じフレームに収め、関係性を見せる',ex:'two-shot of a couple sitting side by side',d:5000,show:'subj2',
+  tr:[['world',T('scale(1.8)','scale(1.86)'),{o:'53.75% 57%'}]]},
+ {id:'insert',cat:'E',ja:'インサート',en:'insert shot',desc:'手元や小道具を差し込みで強調する',ex:'insert shot of a letter sliding under the door',d:5000,show:'letter',
+  tr:[['world',T('scale(6)','scale(6.3)'),{o:'52.25% 59.2%'}]]},
+ // ----- F 時間
+ {id:'slowmo',cat:'F',ja:'スローモーション',en:'slow motion',desc:'決定的な瞬間や情緒を引き延ばす',ex:'slow motion, her hair flowing as she turns',d:4600,show:'parts',tag:'120fps',
+  tr:[['subj',T('translateY(0)','translateY(-4%)'),{o:FEET}],['fx',T('translateY(-8%)','translateY(8%)'),{d:9000,dir:'normal',e:'linear'}],['world',C('scale(1.4)'),{o:FO}]]},
+ {id:'ramp',cat:'F',ja:'スピードランプ',en:'speed ramp',desc:'通常速度とスローを途中で切り替える。アクションの見せ場',ex:'speed ramp as the punch lands, slowing to slow motion',d:3200,dir:'normal',e:'cubic-bezier(.05,.95,.95,.05)',show:'parts',
+  tr:[['subj',T('translateX(-18%)','translateX(18%)')],['fx',T('translateY(-10%)','translateY(10%)')],['world',C('scale(1.3)'),{o:FO}]]},
+ {id:'timelapse',cat:'F',ja:'タイムラプス',en:'timelapse',desc:'長い時間経過を圧縮する。雲や街の流れ',ex:'timelapse of clouds over the city from day to night',d:5200,show:'clouds',
+  tr:[['sky',[{filter:'brightness(1) saturate(1)'},{filter:'brightness(.9) hue-rotate(-25deg) saturate(1.5)',offset:.5},{filter:'brightness(.28) saturate(.8)'}]],
+      ...['far','mid','ground','subj'].map(l=>[l,[{filter:'brightness(1)'},{filter:'brightness(.42)'}]]),
+      ['sun',T('translate(0,0)','translate(-14%,24%)')],['clouds',T('translateX(22%)','translateX(-22%)'),{d:1400,dir:'normal',e:'linear'}]]},
+ {id:'hyperlapse',cat:'F',ja:'ハイパーラプス',en:'hyperlapse',desc:'移動しながら撮るタイムラプス',ex:'hyperlapse moving through Shibuya crossing',d:2800,dir:'normal',e:'steps(10)',show:'clouds',
+  tr:[['world',T('scale(1)','scale(1.45)'),{o:HOR}],['clouds',T('translateX(22%)','translateX(-22%)'),{d:1200,e:'linear'}],['sky',[{filter:'brightness(1)'},{filter:'brightness(.5) hue-rotate(-20deg)'}],{d:6000,dir:'alternate',e:'ease-in-out'}]]},
+ {id:'bullet',cat:'F',ja:'バレットタイム',en:'bullet time, frozen moment',desc:'時間が止まった中をカメラが回り込む',ex:'bullet time, camera orbits as the glass shatters, frozen in midair',d:4400,show:'shards',
+  tr:[['subj',T('scaleX(1)','scaleX(.5)'),{o:'50% 50%'}],['mid',T('translateX(14%)','translateX(-14%)')],['far',T('translateX(4%)','translateX(-4%)')],['sun',T('translateX(4%)','translateX(-4%)')],['ground',T('skewX(22deg)','skewX(-22deg)'),{o:HOR}],['fx',T('translateX(-8%)','translateX(8%)')],['world',C('scale(1.5)'),{o:FO}]]},
+];
+
+const PURPOSES={
+ '場所を見せる':['establishing','aerial','flyover','xwide'],
+ '緊張・気づき':['dollyin','crash','dollyzoom'],
+ '孤独・余韻':['dollyout','crane','cosmic','high'],
+ '驚き・ショック':['crash','dollyzoom','shake','whip'],
+ '威厳・英雄感':['low','worm','pedestal'],
+ '不安・異常':['dutch','snorricam','roll','handheld'],
+ '臨場感':['handheld','pov','tracking'],
+ '疾走感':['fpv','carmount','whip','ramp'],
+ '夢・回想':['floating','slowmo','shallow'],
+ 'ロマンス・関係性':['orbit','twoshot','ots','rack'],
+ '商品・ディテール':['macro','insert','orbit','truck'],
+ '正体を明かす':['reveal','rack','tilt','dollyout'],
+ '時間経過':['timelapse','hyperlapse'],
+ '決定的瞬間':['bullet','slowmo','ramp'],
+ '場面転換':['whip','flythrough','crash'],
+};
+
+// ---------- build ----------
+const grid=document.getElementById('grid'), tpl=document.getElementById('scene');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let paused=reduce;
+const counters={};
+const cards=DATA.map(s=>{
+  const node=tpl.content.firstElementChild.cloneNode(true);
+  counters[s.cat]=(counters[s.cat]||0)+1;
+  const code=(s.cat==='0'?'B0':s.cat)+'-'+String(counters[s.cat]).padStart(2,'0');
+  node.dataset.id=s.id; node.dataset.cat=s.cat;
+  node.dataset.text=(s.ja+' '+s.en+' '+s.desc+' '+s.ex+' '+CATS[s.cat]).toLowerCase();
+  (s.show||'').split(' ').filter(Boolean).forEach(t=>node.classList.add('sh-'+t));
+  node.querySelector('.map').innerHTML=mapSVG;
+  const view=node.querySelector('.view'); if(s.view) view.classList.add(s.view);
+  view.setAttribute('role','img'); view.setAttribute('aria-label',s.ja+'のカメラの動きを示すアニメーション');
+  node.querySelector('.code').textContent=code;
+  if(s.tag){const t=node.querySelector('.tag'); t.textContent=s.tag; t.hidden=false;}
+  node.querySelector('h3').textContent=s.ja;
+  node.querySelector('.en').textContent=s.en;
+  node.querySelector('.desc').textContent=s.desc;
+  node.querySelector('.ex code').textContent=s.ex;
+  const btn=node.querySelector('.copy');
+  btn.addEventListener('click',()=>{
+    const done=()=>{btn.textContent='コピー済み';btn.classList.add('done');setTimeout(()=>{btn.textContent='コピー';btn.classList.remove('done')},1400)};
+    const fallback=()=>{const r=document.createRange();r.selectNodeContents(node.querySelector('.ex code'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);btn.textContent='選択しました';setTimeout(()=>btn.textContent='コピー',1400)};
+    try{navigator.clipboard.writeText(s.ex).then(done,fallback)}catch(e){fallback()}
+  });
+  grid.appendChild(node);
+  const pick=n=> n==='world'?node.querySelector('.world'): n==='fg'?node.querySelector('.fg'): n==='fx'?node.querySelector('.fx'): node.querySelector('.L.'+n);
+  const anims=[];
+  s.tr.forEach(([layer,frames,o={}])=>{
+    const el=pick(layer); if(!el) return;
+    if(o.o) el.style.transformOrigin=o.o;
+    const a=el.animate(frames,{duration:o.d||s.d||3600,iterations:Infinity,direction:o.dir||s.dir||'alternate',easing:o.e||s.e||'ease-in-out',composite:o.add?'add':'replace'});
+    a.pause(); a.currentTime=(o.d||s.d||3600)*.35; anims.push(a);
+  });
+  return {node,anims,visible:false};
+});
+
+// play only what is on screen
+const byNode=new Map(cards.map(c=>[c.node,c]));
+const sync=c=>c.anims.forEach(a=>(c.visible&&!paused)?a.play():a.pause());
+const io=new IntersectionObserver(es=>es.forEach(e=>{const c=byNode.get(e.target);c.visible=e.isIntersecting;sync(c)}),{rootMargin:'100px'});
+cards.forEach(c=>io.observe(c.node));
+const pauseBtn=document.getElementById('pause');
+const setPauseLabel=()=>pauseBtn.textContent=paused?'動きを再生':'動きを止める';
+setPauseLabel();
+pauseBtn.addEventListener('click',()=>{paused=!paused;setPauseLabel();cards.forEach(sync)});
+
+// ---------- filters ----------
+let cat='all', purpose=null, q='';
+const catRow=document.getElementById('cats'), pRow=document.getElementById('purposes');
+const mkChip=(label,on)=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=label;b.setAttribute('aria-pressed',on?'true':'false');return b};
+[['all','すべて'],...Object.entries(CATS)].forEach(([k,v])=>{
+  const b=mkChip(v,k==='all'); b.dataset.k=k;
+  b.addEventListener('click',()=>{cat=k;catRow.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));apply()});
+  catRow.appendChild(b);
+});
+Object.keys(PURPOSES).forEach(k=>{
+  const b=mkChip(k,false);
+  b.addEventListener('click',()=>{purpose=purpose===k?null:k;pRow.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',(purpose&&x===b)?'true':'false'));apply()});
+  pRow.appendChild(b);
+});
+document.getElementById('q').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();apply()});
+function apply(){
+  let n=0;
+  cards.forEach(c=>{
+    const d=c.node.dataset;
+    const ok=(cat==='all'||d.cat===cat)&&(!purpose||PURPOSES[purpose].includes(d.id))&&(!q||d.text.includes(q));
+    c.node.hidden=!ok; if(ok) n++;
+  });
+  document.getElementById('count').textContent=n+' / '+cards.length+' 手法';
+  document.getElementById('empty').hidden=n>0;
+}
+apply();
+</script>
+
+</body></html>
