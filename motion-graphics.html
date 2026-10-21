@@ -38,6 +38,10 @@ h1 span{color:var(--accent)}
 .chip[aria-pressed="true"],.toggle[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .sel{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+/* スマホ幅で、検索欄の行の幅に合わせて操作パネルの列が広がり、画面から横にはみ出していたので、列を画面の幅に収める */
+.controls{grid-template-columns:minmax(0,1fr)}
+/* フォント名の長い選択欄も、行の幅まで縮める */
+.sel{max-width:100%}.sel select{min-width:0}
 .sel select{font:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 .count{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-left:auto}
 
