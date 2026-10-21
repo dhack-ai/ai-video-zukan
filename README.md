@@ -18,7 +18,7 @@ AI動画を作るときに使う、カメラワーク（57種）とモーショ�
 
 ## スキルの入れ方
 
-**claude.ai**: 設定のスキルの画面から、`download/` の ZIP をそのままアップロードする。
+**claude.ai**: 設定 → 機能（Capabilities）で「コードの実行とファイルの作成」をオンにしてから、カスタマイズ（Customize）→ スキル（Skills）→「＋」→ スキルをアップロード（Upload a skill）で、`download/` の ZIP を解凍せずにそのまま上げる。無料プランでも使える。
 
 **Claude Code**: `skills/` の中のフォルダを `~/.claude/skills/` に置く。
 
