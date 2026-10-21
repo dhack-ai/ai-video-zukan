@@ -3,7 +3,7 @@
 AI動画を作るときに使う、カメラワーク（57種）とモーショングラフィックス（47種）の図鑑と、
 その中身を Claude に覚えさせるスキルです。無料で使えます。
 
-- 図鑑を見る: https://（Cloudflare Pages の URL）
+- 図鑑を見る: https://ai-video-zukan.dhack-ai.workers.dev/
 - 作り方と使い方の解説: https://note.com/kazuya_dhack_ai
 
 ## 中身
